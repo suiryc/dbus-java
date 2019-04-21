@@ -661,6 +661,15 @@ public class Message {
                     for (Object o : contents) {
                         diff = appendone(sigb, i, o);
                     }
+                    if (i == diff) {
+                        // advance the type parser even on 0-size arrays.
+                        List<Type> temp = new ArrayList<>();
+                        byte[] temp2 = new byte[sigb.length - diff];
+                        System.arraycopy(sigb, diff, temp2, 0, temp2.length);
+                        String temp3 = new String(temp2);
+                        int temp4 = Marshalling.getJavaType(temp3, temp, 1) - 1;
+                        diff += temp4;
+                    }
                     i = diff;
                 } else if (data instanceof Map) {
                     int diff = i;
@@ -674,7 +683,7 @@ public class Message {
                         byte[] temp2 = new byte[sigb.length - diff];
                         System.arraycopy(sigb, diff, temp2, 0, temp2.length);
                         String temp3 = new String(temp2);
-                        int temp4 = Marshalling.getJavaType(temp3, temp, 1);
+                        int temp4 = Marshalling.getJavaType(temp3, temp, 1) - 1;
                         diff += temp4;
                     }
                     i = diff;
